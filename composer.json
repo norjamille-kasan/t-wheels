@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "norjamille-kasan/jamkitvue",
+    "name": "norjamille-kasan/t-wheels",
     "type": "project",
     "description": "An ultra-strict, type-safe Laravel starter kit with Inertia and Vue.",
     "keywords": [

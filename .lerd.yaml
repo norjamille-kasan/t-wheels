@@ -1,5 +1,5 @@
 domains:
-  - jamkitvue
+  - t-wheels
 php_version: "8.5"
 node_version: "22"
 framework: laravel
