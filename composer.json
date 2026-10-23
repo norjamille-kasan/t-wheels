@@ -64,8 +64,8 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
-            "bun install",
-            "bun run build"
+            "npm install",
+            "npm run build"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
@@ -93,23 +93,23 @@
         ],
         "update:requirements": [
             "composer bump",
-            "bunx npm-check-updates -u"
+            "npx npm-check-updates -u"
         ],
         "lint": [
             "rector",
             "pint --parallel",
-            "bun run lint"
+            "npm run lint"
         ],
         "test:type-coverage": "pest --type-coverage --min=100",
         "test:lint": [
             "pint --parallel --test",
             "rector --dry-run",
-            "bun run test:lint"
+            "npm run test:lint"
         ],
         "test:unit": "XDEBUG_MODE=\"coverage\" pest --parallel --coverage --exactly=100.0",
         "test:types": [
             "phpstan",
-            "bun run test:types"
+            "npm run test:types"
         ],
         "test": [
             "@test:lint",
