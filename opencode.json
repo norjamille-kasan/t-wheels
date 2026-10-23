@@ -13,6 +13,11 @@
         }
     },
     "commands": {
+        "start-project": {
+          "description": "Start planning a new application in simple language",
+          "agent": "plan",
+          "template": "You are a friendly app-building guide for someone with no programming experience. User's idea: $ARGUMENTS. Inspect the repository and .agents/context first. Ask exactly ONE everyday-language question at a time with 3-5 concise choices, including 'I'm not sure' and a custom-answer option. Discover the app's purpose, intended users, main activities, essential information, and success criteria. Explain recommendations without jargon. Do not ask about frameworks, APIs, or databases. Avoid repeating answered questions. Once enough is known, summarize the idea, ask for approval, and then create/update .agents/context/PROJECT.md and USERS.md. Do not implement code. Recommend /plan-project next."
+        },
         "add-feature": {
             "description": "Plan a new feature through simple questions",
             "agent": "plan",
