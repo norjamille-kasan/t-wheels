@@ -1,23 +1,95 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "laravel-boost": {
-      "type": "local",
-      "enabled": true,
-      "command": [
-        "php",
-        "artisan",
-        "boost:mcp"
-      ]
-    },
-    "shadcnVue": {
-      "type": "local",
-      "enabled": true,
-      "command": [
-        "npx",
-        "shadcn-vue@latest",
-        "mcp"
-      ]
+    "servers": {
+      "laravel-boost": {
+        "type": "local",
+        "command": [
+          "php",
+          "artisan",
+          "boost:mcp"
+        ]
+      },
+      "shadcnVue": {
+        "type": "local",
+        "command": [
+          "bunx",
+          "shadcn-vue@latest",
+          "mcp"
+        ]
+      }
     }
+  },
+  "commands": {
+      "add-feature": {
+        "description": "Plan a new feature through simple questions",
+        "agent": "plan",
+        "template": "Help a beginner add a feature to an existing app. Feature idea: $ARGUMENTS. Read existing project context, plans, and relevant code. Ask exactly ONE nontechnical question at a time, offering clear choices, a recommendation where sensible, 'I'm not sure', and custom answers. Ask about what the user wants to accomplish, who uses it, what they see, what information is needed, how success works, and unusual situations. Do not ask the user to choose APIs, database schemas, or implementation patterns. Avoid repeated questions. Summarize the proposed behavior and get approval. Then write a detailed implementation plan in .agents/plans/ with acceptance criteria, technical tasks, tests, and dependency-ordered checklist items with blockers (or None). Update .agents/context/FEATURES.md to reflect planned status. Do not implement. Suggest /build-app next."
+      },
+      "change-feature": {
+        "description": "Plan changes to something already in the app",
+        "agent": "plan",
+        "template": "Help a beginner change an existing feature. Request: $ARGUMENTS. Inspect the feature and relevant project documentation. Explain its current behavior in everyday language. Ask exactly ONE simple question at a time, with choices and a custom option, until the desired behavior and consequences are clear. Preserve unrelated behavior. Summarize changes, get approval, and create a dependency-ordered plan in .agents/plans/ including tests and acceptance criteria. Update context as appropriate. Do not implement yet; suggest /build-app."
+      },
+      "fix-problem": {
+        "description": "Explain and fix an application problem",
+        "agent": "build",
+        "template": "Help a beginner troubleshoot a problem without requiring technical terms. Problem description: $ARGUMENTS. Inspect code and available error output. If necessary, ask ONE simple question at a time about what they did, what they expected, and what happened; offer choices when useful. Reproduce or verify the issue when practical, find the likely cause, and make the smallest safe fix. For risky or major behavior changes, explain the impact and request approval first. Run relevant tests or checks, document unresolved issues, and update .agents/progress/STATUS.md. Do not push or deploy. Explain the fix and how the user can check it in plain language."
+      },
+      "review-app": {
+        "description": "Check the application for problems and improvements",
+        "agent": "plan",
+        "template": "Review the existing app against approved plans and .agents/context. Focus on missing features, broken flows, usability, accessibility, security basics, and test coverage. Request: $ARGUMENTS. Run read-only checks where practical. Present a short beginner-friendly report grouped into working well, needs attention, and optional improvements. Prioritize issues and suggest concrete next commands. Do not implement changes, push code, or modify production. Clearly distinguish verified findings from suggestions."
+      },
+      "project-status": {
+        "description": "See what's finished and what to do next",
+        "agent": "plan",
+        "template": "Read .agents/context, .agents/plans, .agents/progress/STATUS.md, and repository state. Explain in plain language what the application does, what has been finished, what is in progress, any blockers, and the ONE best next step. Do not assume checklist items are complete without evidence. If status files are missing, inspect the code and say what can and cannot be confirmed. Do not modify files. User question: $ARGUMENTS."
+      },
+      "explain": {
+        "description": "Explain any part of the app in simple words",
+        "agent": "plan",
+        "template": "Explain this topic to a complete beginner: $ARGUMENTS. Use project context and code when relevant. Start with a simple answer, use a real-world analogy if helpful, define unavoidable technical words, and give an example from their app. Ask one clarifying question only if necessary. Do not modify files."
+      },
+      "guide": {
+        "description": "Find the next best step for your application",
+        "agent": "plan",
+        "template": "Act as a friendly project guide. Read project files, .agents/context, .agents/plans, .agents/progress/STATUS.md, and available commands in opencode.json or opencode.jsonc. User's situation: $ARGUMENTS. Identify the current stage: no project, idea only, needs requirements, needs design, approved plan ready to build, unfinished build, review needed, or ongoing maintenance. Recommend ONE best next command with an exact copyable example and a brief explanation. If the state is unclear, ask ONE simple multiple-choice question. Never invent commands or automatically execute them. Do not modify files."
+      },
+      "forgot": {
+        "description": "Find the right command by describing what you want",
+        "agent": "plan",
+        "template": "The user is a beginner who forgot which command to use. Their goal: $ARGUMENTS. Read the current OpenCode configuration to discover actual available commands and descriptions. Recommend ONE best matching command (at most two if genuinely ambiguous), show the exact command including their request when useful, and explain in one or two plain-language sentences. If unclear, ask ONE question with choices. Never invent commands, execute commands, or modify files."
+      },
+      "help-me": {
+        "description": "List commands with beginner-friendly examples",
+        "agent": "plan",
+        "template": "Read the project's actual OpenCode configuration and list its available custom commands. Group them under Starting, Building, Improving, Fixing, GitHub, and Getting Help. For each, show its exact name and a very short everyday-language description. If the user provides a goal ($ARGUMENTS), highlight the most relevant command. End by suggesting /forgot followed by what they want to do. Do not invent commands or modify files."
+      },
+      "test": {
+        "description": "Run available tests and explain failures",
+        "agent": "build",
+        "template": "Run the relevant test suite and coverage report if the project supports coverage. Request: $ARGUMENTS. Report which commands ran, which checks passed or failed, and any coverage results that actually exist. Explain failures in plain language and suggest fixes; do not invent coverage numbers. Do not change code unless explicitly requested."
+      },
+      "push": {
+        "description": "Commit and push approved changes to main",
+        "agent": "build",
+        "template": "Help a beginner save intended changes to GitHub main. Request: $ARGUMENTS. Inspect repository status, branch, remote, staged/unstaged files, and ahead/behind status. Review changes for secrets, .env files, credentials, generated artifacts, and unrelated files; stage only appropriate files. If on a branch other than main, if there are unrelated changes, or if integrating remote changes is necessary, stop and ask before switching, merging, or moving work. Run relevant checks when feasible. Explain the files and destination, and obtain explicit confirmation before committing and pushing to origin/main. Generate a meaningful commit message, commit only intended changes, and push without force. Respect branch protection. If there is nothing to commit but local commits to push, explain them and confirm before pushing. Report actual success or failure in simple terms. Never force push, discard work, or deploy."
+      },
+      "push-pr": {
+        "description": "Create a feature branch and open a GitHub pull request",
+        "agent": "build",
+        "template": "Help a beginner submit changes for review. Request: $ARGUMENTS. Inspect Git status, branch, remotes, commit history, and existing pull requests when possible. Determine intended files and commits; exclude secrets and unrelated work. Avoid duplicate PRs. If creating a branch from the current state would include unrelated commits or dirty work cannot be safely isolated, explain and ask before proceeding. Fetch origin/main when available. Choose a descriptive unique branch name (feature/... or fix/...), preserve intended changes, run relevant checks, and prepare a meaningful commit and PR title/body with summary and test results. Before publishing changes or opening the PR, show the branch, intended changes, target main, and ask for explicit confirmation. Then push without force and create the PR with authenticated gh CLI or a supported GitHub integration. Do not merge automatically. If authentication or permissions are missing, explain what is needed; never claim a PR was created unless confirmed. Return the real PR URL if successful."
+      },
+      "push-changes": {
+        "description": "Legacy alias for saving changes to GitHub",
+        "agent": "build",
+        "template": "This is the legacy push-changes command. Follow the same safe workflow as /push: inspect repository and intended changes, exclude secrets, explain destination, obtain explicit confirmation, commit appropriate files, and push to origin/main without force. Do not switch branches or integrate commits without consent. User request: $ARGUMENTS."
+      },
+      "capstone": {
+        "description": "Plan a school capstone project by interviewing you about its objectives and requirements",
+        "agent": "plan",
+        "template": "You are a patient capstone project adviser and application planning assistant helping a student with no programming knowledge. The student's initial request is: $ARGUMENTS\n\nGOAL: Help the student define a realistic capstone application grounded in a clear problem, a general objective, and measurable specific objectives. Do not start coding.\n\nINTERVIEW RULES:\n- Ask EXACTLY ONE question per message, then wait for the student's answer.\n- Use everyday language, concise choices (A/B/C/D) where useful, and always allow a custom answer or 'I'm not sure'.\n- Explain unfamiliar terms in plain language and offer examples, without inventing facts about the student's school.\n- Read existing .agents/context files and plans if present, reuse known answers, and avoid repeating questions.\n- Begin by asking whether the student has an approved title, a proposed title, only an idea, or needs help finding an idea (unless already answered).\n- Gather: working/approved title, problem and current process, intended beneficiaries/users, general objective, specific objectives (ask about each objective as needed), expected features and workflows, scope and limitations, success measures, available data/resources, constraints, deadline, and school/adviser format requirements.\n- If the student already has written objectives, invite them to paste them and help refine without silently changing their intent.\n- Check that specific objectives are concrete, achievable, and aligned with the general objective. Map each objective to a feature or deliverable and a simple way to verify it. Distinguish research/evaluation objectives from software features.\n- Identify unrealistic or unclear requirements, propose beginner-friendly alternatives, and request approval of significant assumptions.\n- Periodically summarize confirmed information briefly, but do not flood the student with technical questions.\n\nAFTER THE INTERVIEW:\n1. Present a plain-language summary for approval: title, problem statement, general objective, numbered specific objectives, target users, scope, limitations, and proposed features.\n2. WAIT for the student's approval before writing or changing files.\n3. Once approved, create .agents/context/CAPSTONE.md containing the approved details, an objective-to-feature-to-verification table, assumptions, constraints, and open questions. Update relevant existing context files carefully without erasing unrelated information.\n4. Create a detailed technical implementation plan in .agents/plans/CAPSTONE_PLAN.md with ordered tasks, explicit dependencies/blockers, validation, testing, and practical milestones. Use existing project conventions and avoid unnecessary complexity.\n5. Explain the next command: /design-app for interface planning, then /build-app only after the implementation plan is approved.\n\nSAFETY: Never fabricate adviser approval, survey results, citations, or research findings. Do not claim the project meets school requirements unless those requirements were provided. Never implement code during this command."
+      }
   }
 }
